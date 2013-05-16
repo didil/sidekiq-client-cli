@@ -25,7 +25,11 @@ Push worker classes to Sidekiq :
 
     $ sidekiq-client push MyWorker OtherWorker
 
-help
+You can specify a sidekiq config file via the -c option (if not specified the usual rails path config/initializers/sidekiq.rb is used) :
+
+    $ sidekiq-client -c mysidekiq.conf push MyWorker OtherWorker
+
+For help :
 
     $ sidekiq-client --help
 
