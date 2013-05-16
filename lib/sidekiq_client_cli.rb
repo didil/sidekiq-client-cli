@@ -1,6 +1,6 @@
 require 'sidekiq'
 require 'cli'
-require 'version'
+require_relative 'sidekiq_client_cli/version'
 
 class SidekiqClientCLI
   COMMANDS = %w{push}
