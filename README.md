@@ -1,5 +1,7 @@
 # sidekiq-client-cli
 
+[![Build Status](https://secure.travis-ci.org/didil/sidekiq-client-cli.png)](http://travis-ci.org/didil/sidekiq-client-cli])
+
 A command line client for Sidekiq
 You can use this to gen when you need to interact with Sidekiq via the command line, for example in cron jobs.
 
