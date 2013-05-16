@@ -95,7 +95,7 @@ describe SidekiqClientCLI do
       klass1 = "FirstWorker"
       klass2 = "SecondWorker"
       settings = double("settings")
-      settings.stub(:command_args).and_return [klass1 , klass2]
+      settings.stub(:command_args).and_return [klass1, klass2]
       @client.settings = settings
 
       Sidekiq::Client.should_receive(:push).with('class' => klass1, 'args' => [])
@@ -103,6 +103,23 @@ describe SidekiqClientCLI do
 
       @client.push
     end
+
+    it "prints and continues if an exception is raised" do
+      klass1 = "FirstWorker"
+      klass2 = "SecondWorker"
+      settings = double("settings")
+      settings.stub(:command_args).and_return [klass1, klass2]
+      @client.settings = settings
+
+      Sidekiq::Client.should_receive(:push).with('class' => klass1, 'args' => []).and_raise
+      Sidekiq::Client.should_receive(:push).with('class' => klass2, 'args' => [])
+
+      out = IOHelper.stdout_read do
+        @client.push
+      end
+      out.should include("Failed to push")
+    end
+
   end
 
 end
