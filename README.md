@@ -1,6 +1,6 @@
 # sidekiq-client-cli
 
-[![Build Status](https://secure.travis-ci.org/didil/sidekiq-client-cli.png)](http://travis-ci.org/didil/sidekiq-client-cli])
+[![Build Status](https://secure.travis-ci.org/didil/sidekiq-client-cli.png)](http://travis-ci.org/didil/sidekiq-client-cli]) [![Code Climate](https://codeclimate.com/github/didil/sidekiq-client-cli.png)](https://codeclimate.com/github/didil/sidekiq-client-cli) [![Coverage Status](https://coveralls.io/repos/didil/sidekiq-client-cli/badge.png)](https://coveralls.io/r/didil/sidekiq-client-cli)
 
 A command line client for Sidekiq
 You can use this to gen when you need to interact with Sidekiq via the command line, for example in cron jobs.
