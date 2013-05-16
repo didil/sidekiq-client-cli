@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'sidekiq/client/cli/version'
+require 'sidekiq_client_cli/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "sidekiq-client-cli"
-  spec.version       = Sidekiq::Client::Cli::VERSION
+  spec.version       = SidekiqClientCLI::VERSION
   spec.authors       = ["Adil Haritah"]
   spec.email         = ["haritahadil@gmail.com"]
   spec.description   = %q{Command line client for Sidekiq. Push worker classes to queue from the cli ...}

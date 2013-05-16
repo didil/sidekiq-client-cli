@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/sidekiq_client_cli'
+
+begin
+  client = SidekiqClientCLI.new
+  client.parse
+  client.run
+rescue => e
+  STDERR.puts e.message
+  STDERR.puts e.backtrace.join("\n")
+  exit 1
+end
