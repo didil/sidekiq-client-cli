@@ -1,6 +1,7 @@
-# Sidekiq::Client::Cli
+# sidekiq-client-cli
 
-TODO: Write a gem description
+A command line client for Sidekiq
+You can use this to gen when you need to interact with sidekiq via the command line, for example in cron jobs.
 
 ## Installation
 
@@ -18,12 +19,25 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Push worker classes to Sidekiq :
 
-## Contributing
+    $ sidekiq-client push MyWorker OtherWorker
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+help
+
+    $ sidekiq-client --help
+
+== Contributing to sidekiq-client
+
+* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
+* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it.
+* Fork the project.
+* Start a feature/bugfix branch.
+* Commit and push until you are happy with your contribution.
+* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
+* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+
+== Copyright
+
+Copyright (c) 2013 didil. See LICENSE.txt for
+further details.
