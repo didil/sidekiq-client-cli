@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["haritahadil@gmail.com"]
   spec.description   = %q{Command line client for Sidekiq. Push worker classes to queue from the cli ...}
   spec.summary       = %q{Command line client for Sidekiq}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/didil/sidekiq-client-cli"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
