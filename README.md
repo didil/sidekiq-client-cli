@@ -29,6 +29,10 @@ You can specify a sidekiq config file via the -c option (if not specified the us
 
     $ sidekiq-client -c mysidekiq.conf push MyWorker OtherWorker
 
+You can also specify a specific queue to push the jobs to :
+
+    $ sidekiq-client -q my_queue push MyWorker OtherWorker
+
 For help :
 
     $ sidekiq-client --help

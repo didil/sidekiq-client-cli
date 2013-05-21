@@ -46,15 +46,27 @@ describe SidekiqClientCLI do
       @client.settings.command.should eq "push"
       @client.settings.command_args.should eq worker_klasses
       @client.settings.config_path.should eq SidekiqClientCLI::DEFAULT_CONFIG_PATH
+			@client.settings.queue.should eq SidekiqClientCLI::DEFAULT_QUEUE
     end
 
-    it "parses push with classes" do
+    it "parses push with a configuration file" do
       worker_klasses = %w{FirstWorker SecondWorker}
       ARGV = %w{ -c mysidekiq.conf push }.concat(worker_klasses)
       @client.parse
       @client.settings.command.should eq "push"
       @client.settings.command_args.should eq worker_klasses
       @client.settings.config_path.should eq "mysidekiq.conf"
+			@client.settings.queue.should eq SidekiqClientCLI::DEFAULT_QUEUE
+    end
+
+    it "parses push with a queue" do
+      worker_klasses = %w{FirstWorker SecondWorker}
+      ARGV = %w{ -q my_queue push }.concat(worker_klasses)
+      @client.parse
+      @client.settings.command.should eq "push"
+      @client.settings.command_args.should eq worker_klasses
+      @client.settings.config_path.should eq SidekiqClientCLI::DEFAULT_CONFIG_PATH
+			@client.settings.queue.should eq "my_queue"
     end
 
   end
@@ -96,10 +108,26 @@ describe SidekiqClientCLI do
       klass2 = "SecondWorker"
       settings = double("settings")
       settings.stub(:command_args).and_return [klass1, klass2]
+      settings.stub(:queue).and_return SidekiqClientCLI::DEFAULT_QUEUE
       @client.settings = settings
 
-      Sidekiq::Client.should_receive(:push).with('class' => klass1, 'args' => [])
-      Sidekiq::Client.should_receive(:push).with('class' => klass2, 'args' => [])
+      Sidekiq::Client.should_receive(:push).with('class' => klass1, 'args' => [], 'queue' => SidekiqClientCLI::DEFAULT_QUEUE)
+      Sidekiq::Client.should_receive(:push).with('class' => klass2, 'args' => [], 'queue' => SidekiqClientCLI::DEFAULT_QUEUE)
+
+      @client.push
+    end
+
+    it "pushes the worker classes to the correct queue" do
+			queue = "Queue"
+      klass1 = "FirstWorker"
+      klass2 = "SecondWorker"
+      settings = double("settings")
+      settings.stub(:command_args).and_return [klass1, klass2]
+      settings.stub(:queue).and_return queue
+      @client.settings = settings
+
+      Sidekiq::Client.should_receive(:push).with('class' => klass1, 'args' => [], 'queue' => queue)
+      Sidekiq::Client.should_receive(:push).with('class' => klass2, 'args' => [], 'queue' => queue)
 
       @client.push
     end
@@ -109,10 +137,11 @@ describe SidekiqClientCLI do
       klass2 = "SecondWorker"
       settings = double("settings")
       settings.stub(:command_args).and_return [klass1, klass2]
+      settings.stub(:queue).and_return SidekiqClientCLI::DEFAULT_QUEUE
       @client.settings = settings
 
-      Sidekiq::Client.should_receive(:push).with('class' => klass1, 'args' => []).and_raise
-      Sidekiq::Client.should_receive(:push).with('class' => klass2, 'args' => [])
+      Sidekiq::Client.should_receive(:push).with('class' => klass1, 'args' => [], 'queue' => SidekiqClientCLI::DEFAULT_QUEUE).and_raise
+      Sidekiq::Client.should_receive(:push).with('class' => klass2, 'args' => [], 'queue' => SidekiqClientCLI::DEFAULT_QUEUE)
 
       out = IOHelper.stdout_read do
         @client.push

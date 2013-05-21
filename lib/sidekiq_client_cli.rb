@@ -5,6 +5,7 @@ require_relative 'sidekiq_client_cli/version'
 class SidekiqClientCLI
   COMMANDS = %w{push}
   DEFAULT_CONFIG_PATH = "config/initializers/sidekiq.rb"
+	DEFAULT_QUEUE = Sidekiq::Worker::ClassMethods::DEFAULT_OPTIONS['queue']
 
   attr_accessor :settings
 
@@ -15,6 +16,7 @@ class SidekiqClientCLI
   def parse
     @settings = CLI.new do
       option :config_path, :short => :c, :default => DEFAULT_CONFIG_PATH, :description => "Sidekiq client config file path"
+			option :queue, :short => :q, :default => DEFAULT_QUEUE, :description => "Queue to place job on"
       argument :command, :description => "'push' to push a job to the queue"
       arguments :command_args, :required => false, :description => "command arguments"
     end.parse! do |settings|
@@ -36,8 +38,8 @@ class SidekiqClientCLI
   def push
     settings.command_args.each do |arg|
       begin
-        jid = Sidekiq::Client.push('class' => arg, 'args' => [])
-        p "Posted #{arg} to queue, Job ID : #{jid}"
+        jid = Sidekiq::Client.push('class' => arg, 'queue' => settings.queue, 'args' => [])
+        p "Posted #{arg} to queue '#{settings.queue}', Job ID : #{jid}"
       rescue StandardError => ex
         p "Failed to push to queue : #{ex.message}"
       end
