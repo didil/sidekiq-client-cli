@@ -37,6 +37,14 @@ You can also specify a specific queue to push the jobs to :
 
     $ sidekiq-client -q my_queue push MyWorker OtherWorker
 
+You can specify that the job should not be retried, if it fails :
+
+    $ sidekiq-client -r false push MyWorker OtherWorker
+
+You can also specify the number of times a job should be retried, if it fails :
+
+    $ sidekiq-client -r 5 push MyWorker OtherWorker
+
 For help :
 
     $ sidekiq-client --help
