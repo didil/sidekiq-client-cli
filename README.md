@@ -19,6 +19,10 @@ Or install it yourself as:
 
     $ gem install sidekiq-client-cli
 
+## Dependencies
+
+Requires sidekiq >= 2.15.0
+
 ## Usage
 
 Push worker classes to Sidekiq :
