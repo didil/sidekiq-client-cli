@@ -5,18 +5,13 @@ require_relative 'sidekiq_client_cli/version'
 class SidekiqClientCLI
   COMMANDS = %w{push}
   DEFAULT_CONFIG_PATH = "config/initializers/sidekiq.rb"
-	DEFAULT_QUEUE = Sidekiq::Worker::ClassMethods::DEFAULT_OPTIONS['queue']
 
   attr_accessor :settings
-
-  def initialize
-
-  end
 
   def parse
     @settings = CLI.new do
       option :config_path, :short => :c, :default => DEFAULT_CONFIG_PATH, :description => "Sidekiq client config file path"
-			option :queue, :short => :q, :default => DEFAULT_QUEUE, :description => "Queue to place job on"
+      option :queue, :short => :q, :description => "Queue to place job on"
       argument :command, :description => "'push' to push a job to the queue"
       arguments :command_args, :required => false, :description => "command arguments"
     end.parse! do |settings|
@@ -30,7 +25,10 @@ class SidekiqClientCLI
 
   def run
     # load the config file
-    load settings.config_path if File.exists? settings.config_path
+    load settings.config_path if File.exists?(settings.config_path)
+
+    # set queue if not given
+    settings.queue ||= Sidekiq.default_worker_options['queue']
 
     self.send settings.command.to_sym
   end
@@ -45,5 +43,5 @@ class SidekiqClientCLI
       end
     end
   end
-end
 
+end

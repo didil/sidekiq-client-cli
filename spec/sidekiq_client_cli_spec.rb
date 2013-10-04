@@ -46,7 +46,7 @@ describe SidekiqClientCLI do
       @client.settings.command.should eq "push"
       @client.settings.command_args.should eq worker_klasses
       @client.settings.config_path.should eq SidekiqClientCLI::DEFAULT_CONFIG_PATH
-			@client.settings.queue.should eq SidekiqClientCLI::DEFAULT_QUEUE
+      @client.settings.queue.should eq SidekiqClientCLI::DEFAULT_QUEUE
     end
 
     it "parses push with a configuration file" do
@@ -56,7 +56,7 @@ describe SidekiqClientCLI do
       @client.settings.command.should eq "push"
       @client.settings.command_args.should eq worker_klasses
       @client.settings.config_path.should eq "mysidekiq.conf"
-			@client.settings.queue.should eq SidekiqClientCLI::DEFAULT_QUEUE
+      @client.settings.queue.should eq SidekiqClientCLI::DEFAULT_QUEUE
     end
 
     it "parses push with a queue" do
@@ -66,7 +66,7 @@ describe SidekiqClientCLI do
       @client.settings.command.should eq "push"
       @client.settings.command_args.should eq worker_klasses
       @client.settings.config_path.should eq SidekiqClientCLI::DEFAULT_CONFIG_PATH
-			@client.settings.queue.should eq "my_queue"
+      @client.settings.queue.should eq "my_queue"
     end
 
   end
@@ -118,7 +118,7 @@ describe SidekiqClientCLI do
     end
 
     it "pushes the worker classes to the correct queue" do
-			queue = "Queue"
+      queue = "Queue"
       klass1 = "FirstWorker"
       klass2 = "SecondWorker"
       settings = double("settings")
