@@ -126,6 +126,31 @@ describe SidekiqClientCLI do
       @client.run
     end
 
+    it "doesnt try to change the retry value if it has been set to false" do
+      config_path = "sidekiq.conf"
+      @client.settings.stub(:config_path).and_return(config_path)
+      @client.settings.stub(:command).and_return("mycommand")
+      @client.settings.stub(:queue).and_return(default_queue)
+      @client.settings.stub(:retry).and_return(false)
+
+      @client.should_receive(:mycommand)
+      @client.should_not_receive(:retry=)
+
+      @client.run
+    end
+
+    it "doesnt try to change the retry value if it has been set to true" do
+      config_path = "sidekiq.conf"
+      @client.settings.stub(:config_path).and_return(config_path)
+      @client.settings.stub(:command).and_return("mycommand")
+      @client.settings.stub(:queue).and_return(default_queue)
+      @client.settings.stub(:retry).and_return(true)
+
+      @client.should_receive(:mycommand)
+      @client.should_not_receive(:retry=)
+
+      @client.run
+    end
   end
 
   describe 'push' do
