@@ -36,7 +36,7 @@ class SidekiqClientCLI
 
     # set queue or retry if they are not given
     settings.queue ||= Sidekiq.default_worker_options['queue']
-    settings.retry ||= Sidekiq.default_worker_options['retry']
+    settings.retry = Sidekiq.default_worker_options['retry'] if settings.retry.nil?
 
     self.send settings.command.to_sym
   end
