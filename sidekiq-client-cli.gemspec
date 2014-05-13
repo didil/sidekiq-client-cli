@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "simplecov"
 
-  spec.add_dependency "sidekiq", "~> 2.15"
+  spec.add_dependency "sidekiq", ">= 2.15"
   spec.add_dependency "cli"
 
 end
