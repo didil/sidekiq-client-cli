@@ -41,18 +41,26 @@ class SidekiqClientCLI
     self.send settings.command.to_sym
   end
 
+  # Returns true if all args can be pushed successfully.
+  # Returns false if at least one exception occured.
   def push
-    settings.command_args.each do |arg|
-      begin
-        jid = Sidekiq::Client.push({ 'class' => arg,
-                                     'queue' => settings.queue,
-                                     'args'  => [],
-                                     'retry' => settings.retry })
-        p "Posted #{arg} to queue '#{settings.queue}', Job ID : #{jid}, Retry : #{settings.retry}"
-      rescue StandardError => ex
-        p "Failed to push to queue : #{ex.message}"
-      end
+    settings.command_args.inject(true) do |success, arg|
+      push_argument arg
     end
+  end
+
+  private
+
+  def push_argument(arg)
+    jid = Sidekiq::Client.push({ 'class' => arg,
+                                 'queue' => settings.queue,
+                                 'args'  => [],
+                                 'retry' => settings.retry })
+    p "Posted #{arg} to queue '#{settings.queue}', Job ID : #{jid}, Retry : #{settings.retry}"
+    true
+  rescue StandardError => ex
+    p "Failed to push to queue : #{ex.message}"
+    false
   end
 
 end
