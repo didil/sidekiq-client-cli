@@ -5,7 +5,7 @@ require_relative '../lib/sidekiq_client_cli'
 begin
   client = SidekiqClientCLI.new
   client.parse
-  client.run
+  client.run or exit 1
 rescue => e
   STDERR.puts e.message
   STDERR.puts e.backtrace.join("\n")

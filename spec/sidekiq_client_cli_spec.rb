@@ -157,97 +157,87 @@ describe SidekiqClientCLI do
     let(:settings) { double("settings") }
     let(:klass1) { "FirstWorker" }
     let(:klass2) { "SecondWorker" }
+    let(:client) { SidekiqClientCLI.new }
 
     before(:each) do
       settings.stub(:command_args).and_return [klass1, klass2]
+      client.settings = settings
+    end
+
+    it 'returns true if all #push_argument calls return true' do
+      client.stub(:push_argument).and_return(true)
+      client.push.should eq true
+    end
+
+    it 'returns false if at least one #push_argument call fails' do
+      client.should_receive(:push_argument).with('FirstWorker').and_return(true)
+      client.should_receive(:push_argument).with('SecondWorker').and_return(false)
+      client.push.should eq false
+    end
+  end
+
+  describe '#push_argument' do
+    let(:settings) { double("settings", :queue => default_queue, :retry => default_retry_option) }
+    let(:klass1) { "FirstWorker" }
+    let(:client) { SidekiqClientCLI.new }
+
+    before(:each) do
+      client.settings = settings
     end
 
     it "pushes the worker classes" do
-      settings.stub(:queue).and_return default_queue
-      settings.stub(:retry).and_return default_retry_option
-      @client.settings = settings
       Sidekiq::Client.should_receive(:push).with('class' => klass1,
                                                  'args' => [],
                                                  'queue' => default_queue,
                                                  'retry' => default_retry_option)
-      Sidekiq::Client.should_receive(:push).with('class' => klass2,
-                                                 'args' => [],
-                                                 'queue' => default_queue,
-                                                 'retry' => default_retry_option)
 
-      @client.push
+      client.__send__(:push_argument, klass1).should eq true
     end
 
     it "pushes the worker classes to the correct queue" do
       queue = "Queue"
       settings.stub(:queue).and_return queue
-      settings.stub(:retry).and_return default_retry_option
-      @client.settings = settings
 
       Sidekiq::Client.should_receive(:push).with('class' => klass1,
                                                  'args' => [],
                                                  'queue' => queue,
                                                  'retry' => default_retry_option)
-      Sidekiq::Client.should_receive(:push).with('class' => klass2,
-                                                 'args' => [],
-                                                 'queue' => queue,
-                                                 'retry' => default_retry_option)
 
-      @client.push
+      client.__send__(:push_argument, klass1).should eq true
     end
 
     it 'pushes the worker classes with retry disabled' do
       retry_option = false
-      settings.stub(:queue).and_return default_queue
       settings.stub(:retry).and_return retry_option
-      @client.settings = settings
 
       Sidekiq::Client.should_receive(:push).with('class' => klass1,
                                                  'args' => [],
                                                  'queue' => default_queue,
                                                  'retry' => retry_option)
-      Sidekiq::Client.should_receive(:push).with('class' => klass2,
-                                                 'args' => [],
-                                                 'queue' => default_queue,
-                                                 'retry' => retry_option)
 
-      @client.push
+      client.__send__(:push_argument, klass1).should eq true
     end
 
     it 'pushes the worker classes with a set retry number' do
       retry_attempts = 5
-      settings.stub(:queue).and_return default_queue
       settings.stub(:retry).and_return retry_attempts
-      @client.settings = settings
 
       Sidekiq::Client.should_receive(:push).with('class' => klass1,
                                                  'args' => [],
                                                  'queue' => default_queue,
                                                  'retry' => retry_attempts)
-      Sidekiq::Client.should_receive(:push).with('class' => klass2,
-                                                 'args' => [],
-                                                 'queue' => default_queue,
-                                                 'retry' => retry_attempts)
 
-      @client.push
+      client.__send__(:push_argument, klass1).should eq true
     end
 
     it "prints and continues if an exception is raised" do
-      settings.stub(:queue).and_return default_queue
-      settings.stub(:retry).and_return default_retry_option
-      @client.settings = settings
-
       Sidekiq::Client.should_receive(:push).with('class' => klass1,
                                                  'args' => [],
                                                  'queue' => default_queue,
                                                  'retry' => default_retry_option).and_raise
-      Sidekiq::Client.should_receive(:push).with('class' => klass2,
-                                                 'args' => [],
-                                                 'queue' => default_queue,
-                                                 'retry' => default_retry_option)
 
       out = IOHelper.stdout_read do
-        @client.push
+        client.__send__(:push_argument, klass1).should eq false
       end
       out.should include("Failed to push")
     end
